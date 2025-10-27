@@ -3,20 +3,19 @@
 # -----------------------------
 FROM node:20 AS build
 
-# Set working directory
 WORKDIR /app
 
-# Copy only package files first (for caching)
+# Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm install
+# Force devDependencies installation (includes Tailwind)
+RUN npm install --include=dev
 
-# Copy all project files (for Tailwind build)
+# Copy all source files (for Tailwind input/output)
 COPY . .
 
-# Build CSS
-RUN npm run build:css
+# Build Tailwind CSS (compile once, not watch)
+RUN npx tailwindcss -i ./public/css/input.css -o ./public/css/styles.css --minify
 
 
 # -----------------------------
@@ -24,13 +23,10 @@ RUN npm run build:css
 # -----------------------------
 FROM php:8.2-apache
 
-# Enable Apache mod_rewrite (for clean URLs)
+# Enable Apache mod_rewrite for clean URLs
 RUN a2enmod rewrite
 
-# Install required PHP extensions (optional but safe)
-RUN docker-php-ext-install pdo pdo_mysql
-
-# Copy Composer from official image
+# Copy Composer binary from official image
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Set working directory
@@ -39,16 +35,16 @@ WORKDIR /var/www/html
 # Copy project files from Node build stage
 COPY . .
 
-# Copy the built CSS from previous stage
+# Copy built CSS from previous stage
 COPY --from=build /app/public/css ./public/css
 
-# Install Composer dependencies
+# Install Composer dependencies (safe for Twig)
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
-# Ensure Apache has correct permissions
+# Fix permissions
 RUN chown -R www-data:www-data /var/www/html
 
-# Expose web port
+# Expose port 80
 EXPOSE 80
 
 # Start Apache server
