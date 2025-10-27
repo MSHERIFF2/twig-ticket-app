@@ -1,29 +1,54 @@
-# Use the official PHP image with Apache
-FROM php:8.2-apache
-
-# Enable Apache mod_rewrite (needed for routing)
-RUN a2enmod rewrite
-
-# Copy your project files into the container
-COPY . /var/www/html/
+# -----------------------------
+# Stage 1: Build CSS with Node
+# -----------------------------
+FROM node:20 AS build
 
 # Set working directory
-WORKDIR /var/www/html/
+WORKDIR /app
 
-# Install Composer
+# Copy only package files first (for caching)
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy all project files (for Tailwind build)
+COPY . .
+
+# Build CSS
+RUN npm run build:css
+
+
+# -----------------------------
+# Stage 2: PHP + Apache
+# -----------------------------
+FROM php:8.2-apache
+
+# Enable Apache mod_rewrite (for clean URLs)
+RUN a2enmod rewrite
+
+# Install required PHP extensions (optional but safe)
+RUN docker-php-ext-install pdo pdo_mysql
+
+# Copy Composer from official image
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Install PHP dependencies
-RUN composer install --no-interaction --no-scripts --no-autoloader
-RUN composer dump-autoload --optimize
+# Set working directory
+WORKDIR /var/www/html
 
-# Install Node and Tailwind for CSS build
-RUN apt-get update && apt-get install -y curl gnupg && \
-    curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
-    apt-get install -y nodejs && \
-    npm install && npm run build:css
+# Copy project files from Node build stage
+COPY . .
 
-# Expose port 80
+# Copy the built CSS from previous stage
+COPY --from=build /app/public/css ./public/css
+
+# Install Composer dependencies
+RUN composer install --no-interaction --prefer-dist --optimize-autoloader
+
+# Ensure Apache has correct permissions
+RUN chown -R www-data:www-data /var/www/html
+
+# Expose web port
 EXPOSE 80
 
 # Start Apache server
