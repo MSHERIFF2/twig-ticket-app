@@ -1,0 +1,47 @@
+{% extends "base.twig" %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 px-4 py-10">
+  <div class="max-w-5xl mx-auto">
+    <header class="mb-8 flex justify-between items-center">
+      <h1 class="text-2xl font-semibold text-gray-800">Dashboard</h1>
+      <button id="logoutBtn" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition">
+        Logout
+      </button>
+    </header>
+
+    <section class="bg-white rounded-2xl shadow p-6 mb-8">
+      <p class="text-gray-700 text-lg">
+        Welcome back, <span id="userEmail" class="font-semibold text-blue-600"></span> 👋
+      </p>
+    </section>
+
+    <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="bg-green-50 p-6 rounded-xl text-center border border-green-200">
+        <h3 class="text-xl font-semibold text-green-700">Open</h3>
+        <p id="openCount" class="text-3xl font-bold text-green-800 mt-2">0</p>
+      </div>
+
+      <div class="bg-amber-50 p-6 rounded-xl text-center border border-amber-200">
+        <h3 class="text-xl font-semibold text-amber-700">In Progress</h3>
+        <p id="inProgressCount" class="text-3xl font-bold text-amber-800 mt-2">0</p>
+      </div>
+
+      <div class="bg-gray-50 p-6 rounded-xl text-center border border-gray-200">
+        <h3 class="text-xl font-semibold text-gray-700">Closed</h3>
+        <p id="closedCount" class="text-3xl font-bold text-gray-800 mt-2">0</p>
+      </div>
+    </section>
+
+    <div class="mt-10 text-center">
+      <a href="/tickets" class="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition">
+        Manage Tickets
+      </a>
+    </div>
+  </div>
+</div>
+
+<script src="/js/toast.js"></script>
+<script src="/js/auth-guard.js"></script>
+<script src="/js/dashboard.js"></script>
+{% endblock %}
