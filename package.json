@@ -4,9 +4,9 @@
   "description": "",
   "main": "tailwind.config.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-     "build:css": "tailwindcss -i ./public/css/input.css -o ./public/css/styles.css --minify"
-  },
+  "test": "echo \"Error: no test specified\" && exit 1",  
+  "build:css": "npx tailwindcss -i ./public/css/input.css -o ./public/css/styles.css --minify"
+},
   "keywords": [],
   "author": "",
   "license": "ISC",
