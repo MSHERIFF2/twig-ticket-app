@@ -9,16 +9,16 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies (including dev)
+# This installs tailwindcss into node_modules/.bin/
 RUN npm install --include=dev
 
-# Install Tailwind CLI globally so it's always accessible
-RUN npm install -g tailwindcss
+# REMOVE: RUN npm install -g tailwindcss
 
 # Copy project files
 COPY . .
 
-# Build Tailwind CSS (no npx confusion)
-RUN tailwindcss -i ./public/css/input.css -o ./public/css/styles.css --minify
+# Build Tailwind CSS (Use npx to find the executable in node_modules/.bin)
+RUN npx tailwindcss -i ./public/css/input.css -o ./public/css/styles.css --minify
 
 
 # -----------------------------
@@ -38,6 +38,7 @@ WORKDIR /var/www/html
 COPY . .
 
 # Copy built CSS
+# The built styles.css will now be successfully copied from the build stage.
 COPY --from=build /app/public/css ./public/css
 
 # Install Composer dependencies
