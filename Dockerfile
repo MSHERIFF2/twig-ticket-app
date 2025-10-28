@@ -15,8 +15,8 @@ RUN npm install --include=dev
 COPY . .
 
 # 4. Build Tailwind CSS 
-# Direct execution of the binary to bypass npm/npx path issues (Fix for exit code 127)
-RUN ./node_modules/.bin/tailwindcss -i ./public/css/input.css -o ./public/css/styles.css --minify
+# FINAL FIX: Use the absolute path to 'npm' to run the script 'build:css'
+RUN /usr/local/bin/npm run build:css
 
 
 # -----------------------------
