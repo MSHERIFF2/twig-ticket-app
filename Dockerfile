@@ -1,28 +1,25 @@
-# -----------------------------
+## -----------------------------
 # Stage 1: Build CSS with Node 
 # -----------------------------
 FROM node:20 AS build
 
 WORKDIR /app
 
-# 1. Copy package files (Critical for the install step)
+# 1. Copy package files (Now includes correct Tailwind version)
 COPY package*.json ./
 
-# 2. Clean install dependencies (including dev)
-# Clears cache and forces a fresh install to ensure the binary is placed correctly.
-RUN npm cache clean --force && npm install --include=dev --force
+# 2. Install dependencies (This should now install the 'tailwindcss' binary correctly)
+RUN npm install --include=dev
 
 # 3. Copy project files (input.css, tailwind.config.js, etc.)
 COPY . .
 
-# --- DIAGNOSTIC STEP ---
-# This step confirms the binary is present and executable before the final run.
-RUN ls -l ./node_modules/.bin/tailwindcss
-
 # 4. Build Tailwind CSS 
-# FINAL FIX: Uses the absolute path to 'npm' and the explicit 'exec' command 
-# to run the locally installed 'tailwindcss' binary, bypassing all PATH issues.
-RUN /usr/local/bin/npm exec tailwindcss -- -i ./public/css/input.css -o ./public/css/styles.css --minify
+# Use the script defined in your package.json, which is the standard, reliable method.
+# Your script uses 'npx', which correctly finds the local binary.
+RUN npm run build:css
+
+
 
 
 # -----------------------------
