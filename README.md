@@ -5,9 +5,12 @@ A Multi-Framework Ticket Management Web Application (Twig Implementation)
 This is the Twig implementation of the HNG Frontend Stage 2 Task: Multi-Framework Ticket Web App.
 It delivers a complete, responsive, and accessible ticket management experience — including authentication, dashboard analytics, and full CRUD operations — all powered by Twig, PHP, and Tailwind CSS.
 
-🌐 Live Preview
+Live Preview:
 
-(Add your deployment link here once hosted — e.g., Netlify, Vercel (with PHP hosting), or a simple Render deployment.)
+React: tickets-app-react-v.netlify.app
+Vue:  https://tangerine-quokka-615328.netlify.app/
+Twig: https://twig-ticket-app-2he3.onrender.com
+
 
 ⚙️ Tech Stack
 
