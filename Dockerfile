@@ -11,12 +11,12 @@ COPY package*.json ./
 # 2. Install dependencies (This installs the binaries into node_modules/.bin/)
 RUN npm install --include=dev
 
-# 3. Copy project files (input.css, tailwind.config.js, etc.)
+# 3. Copy project files (Crucial for input.css and config files)
 COPY . .
 
 # 4. Build Tailwind CSS 
-# FINAL FIX: Use the absolute path to 'npm' to run the script 'build:css'
-RUN /usr/local/bin/npm run build:css
+# FINAL FIX: Use the absolute path to 'npm' to execute 'npx'
+RUN /usr/local/bin/npm exec tailwindcss -- -i ./public/css/input.css -o ./public/css/styles.css --minify
 
 
 # -----------------------------
