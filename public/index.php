@@ -1,4 +1,12 @@
 <?php
+// --- ADD THIS BLOCK ---
+if (php_sapi_name() === 'cli-server') {
+    // If the request URI is an actual file on disk, serve it directly and stop processing
+    $requested_file = __DIR__ . parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+    if (is_file($requested_file)) {
+        return false;
+    }
+}
 require_once __DIR__ . '/../vendor/autoload.php';
 
 $loader = new \Twig\Loader\FilesystemLoader(__DIR__ . '/../templates');
