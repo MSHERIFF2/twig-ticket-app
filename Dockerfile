@@ -32,4 +32,4 @@ EXPOSE 8080
 # CRITICAL: Define the command to start the built-in PHP server.
 # This replaces the Procfile for Docker deployments on Render.
 # It explicitly binds to 8080, which Render's environment handles mapping to the external port.
-CMD ["php", "-S", "0.0.0.0:8080", "-t", "."]
+CMD ["php", "-S", "0.0.0.0:8080", "-t", "public"]
