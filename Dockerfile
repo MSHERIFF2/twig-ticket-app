@@ -8,14 +8,17 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Force devDependencies installation (includes Tailwind)
+# Install dependencies (including dev)
 RUN npm install --include=dev
 
-# Copy all source files (for Tailwind input/output)
+# Install Tailwind CLI globally so it's always accessible
+RUN npm install -g tailwindcss
+
+# Copy project files
 COPY . .
 
-# Build Tailwind CSS (compile once, not watch)
-RUN npx tailwindcss -i ./public/css/input.css -o ./public/css/styles.css --minify
+# Build Tailwind CSS (no npx confusion)
+RUN tailwindcss -i ./public/css/input.css -o ./public/css/styles.css --minify
 
 
 # -----------------------------
@@ -23,29 +26,28 @@ RUN npx tailwindcss -i ./public/css/input.css -o ./public/css/styles.css --minif
 # -----------------------------
 FROM php:8.2-apache
 
-# Enable Apache mod_rewrite for clean URLs
+# Enable mod_rewrite for routing
 RUN a2enmod rewrite
 
 # Copy Composer binary from official image
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Set working directory
 WORKDIR /var/www/html
 
-# Copy project files from Node build stage
+# Copy all app files from build stage
 COPY . .
 
-# Copy built CSS from previous stage
+# Copy built CSS
 COPY --from=build /app/public/css ./public/css
 
-# Install Composer dependencies (safe for Twig)
+# Install Composer dependencies
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
 # Fix permissions
 RUN chown -R www-data:www-data /var/www/html
 
-# Expose port 80
+# Expose port
 EXPOSE 80
 
-# Start Apache server
+# Start Apache
 CMD ["apache2-foreground"]
