@@ -5,7 +5,7 @@ module.exports = {
  
   content: [
     "./templates/**/*.twig",
-    "../assets/**/*.svg",
+    
   ],
    safelist: [
     "bg-red-600",
@@ -13,8 +13,20 @@ module.exports = {
     "bg-amber-500",
     "text-white",
   ],
-  theme: {
-    extend: {},
+ theme: {
+    extend: {
+      colors: {
+        open: "#16a34a", // green tone
+        in_progress: "#f59e0b", // amber tone
+        closed: "#9ca3af", // gray tone
+      },
+      maxWidth: {
+        container: "1440px",
+      },
+      fontFamily: {
+        sans: ["Inter", "system-ui", "sans-serif"],
+      },
+    },
   },
   plugins: [],
 };
