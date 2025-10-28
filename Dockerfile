@@ -21,3 +21,15 @@ COPY --from=composer_install /app/vendor /app/vendor
 
 # Copy the rest of your application code (index.php, templates, assets)
 COPY . /app
+
+# ----------------------------------------------------
+# ⬇️ RENDER FIXES ⬇️
+# ----------------------------------------------------
+
+# Expose a fixed port (Render often requires 8080 or 10000 for visibility)
+EXPOSE 8080
+
+# CRITICAL: Define the command to start the built-in PHP server.
+# This replaces the Procfile for Docker deployments on Render.
+# It explicitly binds to 8080, which Render's environment handles mapping to the external port.
+CMD ["php", "-S", "0.0.0.0:8080", "-t", "."]
